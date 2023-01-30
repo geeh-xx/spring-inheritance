@@ -7,19 +7,21 @@ import lombok.Setter;
 
 import static jakarta.persistence.CascadeType.ALL;
 
-@Entity(name = "tb_country")
+@Entity(name = "tb_informations")
 @Getter
 @Setter
-public class CountryEntity {
+public class InformationEntity {
 
     @Id
-    private Long id;
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id_information")
+    private Long idInformations;
 
-    private String name;
+    private String country;
 
     private String currency;
 
     @OneToOne(cascade = ALL)
-    @JoinColumn(name = "member_id", referencedColumnName = "id")
+    @JoinColumn(name = "id_member", referencedColumnName = "id_member")
     private MemberEntity member;
 }
