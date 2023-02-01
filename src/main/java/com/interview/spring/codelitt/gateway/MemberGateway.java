@@ -10,8 +10,6 @@ public interface MemberGateway {
 
     MemberDTO findMemberById(Long id);
 
-    List<MemberDTO> findAll(Integer pageNumber, Integer pageSize);
-
     MemberDTO updateMember(MemberDTO memberDTO);
 
     MemberDTO deleteMemberById(Long id);

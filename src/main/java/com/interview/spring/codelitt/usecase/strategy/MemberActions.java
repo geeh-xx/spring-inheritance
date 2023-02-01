@@ -9,12 +9,7 @@ public interface MemberActions {
 
     MemberDTO create(MemberDTO memberDTO);
 
-    MemberDTO findByid(Long id);
-
-    List<MemberDTO> findAll();
-
-    List<MemberDTO> findAll(Integer pageNumber, Integer pageSize);
-
+    MemberDTO findById(Long id);
 
     MemberDTO update(MemberDTO memberDTO);
 

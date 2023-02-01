@@ -1,6 +1,7 @@
 package com.interview.spring.codelitt.usecase;
 
-import com.interview.spring.codelitt.dataprovider.MemberRepository;
+import com.interview.spring.codelitt.dataprovider.repository.ContractorRepository;
+import com.interview.spring.codelitt.dataprovider.repository.MemberRepository;
 import com.interview.spring.codelitt.dataprovider.entities.ContractorEntity;
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
@@ -28,7 +29,7 @@ import static org.mockito.Mockito.*;
 public class ContractorUseCaseTest {
 
     @Mock
-    private  MemberRepository repository;
+    private ContractorRepository repository;
     @Mock
     private  MemberMapper mapper;
 

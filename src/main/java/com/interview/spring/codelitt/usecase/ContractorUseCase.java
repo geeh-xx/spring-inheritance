@@ -1,6 +1,7 @@
 package com.interview.spring.codelitt.usecase;
 
-import com.interview.spring.codelitt.dataprovider.MemberRepository;
+import com.interview.spring.codelitt.dataprovider.repository.ContractorRepository;
+import com.interview.spring.codelitt.dataprovider.repository.MemberRepository;
 import com.interview.spring.codelitt.dataprovider.entities.ContractorEntity;
 import com.interview.spring.codelitt.dataprovider.entities.InformationEntity;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
@@ -10,6 +11,7 @@ import com.interview.spring.codelitt.usecase.strategy.MemberActions;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
 import com.interview.spring.codelitt.webprovider.InformationWebProvider;
 import com.interview.spring.codelitt.webprovider.client.CountryCurrencyClient;
+import jakarta.persistence.EntityNotFoundException;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 
@@ -20,10 +22,10 @@ import static com.interview.spring.codelitt.enums.MemberTypeEnum.CONTRACTOR;
 @Component
 public class ContractorUseCase extends InformationWebProvider implements MemberActions {
 
-    private final MemberRepository repository;
+    private final ContractorRepository repository;
     private final MemberMapper mapper;
 
-    public ContractorUseCase(CountryCurrencyClient client, MessageSource messageSource, MemberRepository repository, MemberMapper mapper) {
+    public ContractorUseCase(CountryCurrencyClient client, MessageSource messageSource, ContractorRepository repository, MemberMapper mapper) {
         super(client, messageSource);
         this.repository = repository;
         this.mapper = mapper;
@@ -31,6 +33,7 @@ public class ContractorUseCase extends InformationWebProvider implements MemberA
 
     @Override
     public MemberDTO create(MemberDTO payload) {
+
         checkParticularity(payload.getContractDuration());
         InformationEntity informationEntity = buildInformationByCountry(payload.getCountry());
         ContractorEntity contractorEntity = ContractorEntity.builder().memberEntity(mapper.dtoToEntity(payload))
@@ -42,25 +45,17 @@ public class ContractorUseCase extends InformationWebProvider implements MemberA
         ContractorEntity save = repository.save(contractorEntity);
         MemberDTO memberDTO = mapper.entityToDto(save);
 
-        memberDTO.setType(getMemberType());
         memberDTO.setContractDuration(save.getContractDuration());
 
         return memberDTO;
     }
 
     @Override
-    public MemberDTO findByid(Long id) {
-        return null;
-    }
-
-    @Override
-    public List<MemberDTO> findAll() {
-        return null;
-    }
-
-    @Override
-    public List<MemberDTO> findAll(Integer pageNumber, Integer pageSize) {
-        return null;
+    public MemberDTO findById(Long id) {
+        ContractorEntity contractorEntity = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Id not found"));
+        MemberDTO memberDTO = mapper.entityToDto(contractorEntity);
+        memberDTO.setContractDuration(contractorEntity.getContractDuration());
+        return memberDTO;
     }
 
     @Override

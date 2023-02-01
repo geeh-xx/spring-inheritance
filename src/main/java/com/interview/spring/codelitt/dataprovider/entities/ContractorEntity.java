@@ -1,8 +1,10 @@
 package com.interview.spring.codelitt.dataprovider.entities;
 
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
+import jakarta.persistence.Column;
 import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
+import jakarta.persistence.PrimaryKeyJoinColumn;
 import lombok.*;
 
 import static com.interview.spring.codelitt.enums.MemberTypeEnum.ValuesMember.CONTRACTOR;
@@ -13,10 +15,12 @@ import static com.interview.spring.codelitt.enums.MemberTypeEnum.ValuesMember.CO
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@DiscriminatorValue(value = CONTRACTOR)
+@Entity(name ="tb_contractor")
+@PrimaryKeyJoinColumn(name = "id_contractor")
 public class ContractorEntity extends MemberEntity {
 
+
+    @Column(name ="contract_duration")
     private Integer contractDuration;
 
     @Builder

@@ -1,7 +1,7 @@
 package com.interview.spring.codelitt.usecase;
 
-import com.interview.spring.codelitt.dataprovider.MemberRepository;
 import com.interview.spring.codelitt.dataprovider.entities.EmployeeEntity;
+import com.interview.spring.codelitt.dataprovider.repository.EmployeeRepository;
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.infrastructure.exception.ExternalDependencyException;
@@ -28,7 +28,7 @@ import static org.mockito.Mockito.*;
 public class EmployeeUseCaseTest {
 
     @Mock
-    private MemberRepository repository;
+    private EmployeeRepository repository;
     @Mock
     private MemberMapper mapper;
 
@@ -65,7 +65,7 @@ public class EmployeeUseCaseTest {
         when(client.getCurrencyByCountry(anyString())).thenReturn(currency);
         when(mapper.dtoToEntity(any(MemberDTO.class))).thenReturn(memberEntity);
         when(mapper.entityToDto(any(MemberEntity.class))).thenReturn(payload);
-        when(repository.save(any(MemberEntity.class))).thenReturn(employeeEntity);
+        when(repository.save(any(EmployeeEntity.class))).thenReturn(employeeEntity);
 
         //when
         MemberDTO memberDTO = useCase.create(payload);

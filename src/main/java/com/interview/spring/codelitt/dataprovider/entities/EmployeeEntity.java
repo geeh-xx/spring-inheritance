@@ -2,10 +2,7 @@ package com.interview.spring.codelitt.dataprovider.entities;
 
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import com.interview.spring.codelitt.enums.EmployeeRoleEnum;
-import jakarta.persistence.DiscriminatorValue;
-import jakarta.persistence.Entity;
-import jakarta.persistence.EnumType;
-import jakarta.persistence.Enumerated;
+import jakarta.persistence.*;
 import lombok.*;
 
 import static com.interview.spring.codelitt.enums.MemberTypeEnum.ValuesMember.EMPLOYEE;
@@ -13,8 +10,8 @@ import static com.interview.spring.codelitt.enums.MemberTypeEnum.ValuesMember.EM
 @Getter
 @Setter
 @NoArgsConstructor
-@Entity
-@DiscriminatorValue(EMPLOYEE)
+@Entity(name ="tb_employee")
+@PrimaryKeyJoinColumn(name = "id_employee")
 public class EmployeeEntity extends MemberEntity {
 
     @Enumerated(EnumType.STRING)

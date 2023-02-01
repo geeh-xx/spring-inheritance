@@ -1,6 +1,8 @@
 package com.interview.spring.codelitt.dataprovider.entities.inheritance;
 
 import com.interview.spring.codelitt.dataprovider.entities.InformationEntity;
+import com.interview.spring.codelitt.enums.EmployeeRoleEnum;
+import com.interview.spring.codelitt.enums.MemberTypeEnum;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -10,12 +12,12 @@ import lombok.Setter;
 import java.util.List;
 
 import static jakarta.persistence.DiscriminatorType.STRING;
+import static jakarta.persistence.InheritanceType.JOINED;
 import static jakarta.persistence.InheritanceType.SINGLE_TABLE;
 
 
 @Entity(name = "tb_members")
-@Inheritance(strategy = SINGLE_TABLE)
-@DiscriminatorColumn(name = "type", discriminatorType = STRING)
+@Inheritance(strategy = JOINED)
 @NoArgsConstructor
 @AllArgsConstructor
 @Getter
@@ -31,6 +33,10 @@ public class MemberEntity {
 
     private String name;
 
+    @Enumerated(EnumType.STRING)
+    private MemberTypeEnum type;
+
+
     @OneToOne(mappedBy = "member",cascade = CascadeType.ALL)
     private InformationEntity information;
 
@@ -44,6 +50,7 @@ public class MemberEntity {
         this.name = memberEntity.getName();
         this.information = memberEntity.getInformation();
         this.tags = memberEntity.getTags();
+        this.type = memberEntity.getType();
     }
 
 }

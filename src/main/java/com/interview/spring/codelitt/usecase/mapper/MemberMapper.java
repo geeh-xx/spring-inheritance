@@ -9,14 +9,14 @@ public class MemberMapper {
 
     public MemberEntity dtoToEntity(MemberDTO payload){
         MemberEntity build = new MemberEntity(payload.getIdMember(), payload.getSalary(),
-                                            payload.getName(), null, payload.getTags());
+                                            payload.getName(), payload.getType(), null, payload.getTags());
         return build;
     }
 
 
     public MemberDTO entityToDto(MemberEntity entity){
         return MemberDTO.builder().idMember(entity.getIdMember()).salary(entity.getSalary())
-                .tags(entity.getTags()).country(entity.getInformation().getCountry())
+                .tags(entity.getTags()).country(entity.getInformation().getCountry()).type(entity.getType())
                 .name(entity.getName()).currency(entity.getInformation().getCurrency()).build();
     }
 

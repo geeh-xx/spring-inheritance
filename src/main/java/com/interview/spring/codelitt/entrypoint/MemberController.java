@@ -4,7 +4,6 @@ import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.gateway.MemberGateway;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,15 +23,19 @@ public class MemberController {
          return new ResponseEntity<>(memberGateway.createMember(memberDto), CREATED);
     }
 
-    @GetMapping(value = "/member")
-    public ResponseEntity<List<MemberDTO>> getAllMembers(@RequestParam(value ="pageNumber", required = false) Integer pageNumber,
-                                                         @RequestParam(value ="pagesize", required = false) Integer pagesize){
-        return new ResponseEntity<>(memberGateway.findAll(pageNumber, pagesize), OK);
-    }
-
     @GetMapping(value = "/member/{idMember}")
     public ResponseEntity<MemberDTO> getMemberByid(@PathVariable("idMember") Long idMember){
         return new ResponseEntity<>(memberGateway.findMemberById(idMember), OK);
+    }
+
+    @PutMapping(value = "/member")
+    public ResponseEntity<MemberDTO> updateMember(@RequestBody @Valid MemberDTO memberDto){
+        return new ResponseEntity<>(memberGateway.updateMember(memberDto), OK);
+    }
+
+    @DeleteMapping(value = "/member/{idMember}")
+    public ResponseEntity<Void> deleteMember(@PathVariable("idMember") Long idMember){
+        return ResponseEntity.ok().build();
     }
 
 }

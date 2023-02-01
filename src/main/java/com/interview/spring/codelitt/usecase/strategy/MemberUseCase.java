@@ -1,6 +1,7 @@
 package com.interview.spring.codelitt.usecase.strategy;
 
-import com.interview.spring.codelitt.dataprovider.MemberRepository;
+import com.interview.spring.codelitt.dataprovider.projection.MemberProjectionType;
+import com.interview.spring.codelitt.dataprovider.repository.MemberRepository;
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.gateway.MemberGateway;
@@ -19,7 +20,6 @@ public class MemberUseCase implements MemberGateway {
     private final MemberFactory memberFactory;
     private final MemberRepository repository;
 
-    private final MemberMapper mapper;
     @Override
     public MemberDTO createMember(MemberDTO payload)  {
         MemberActions member = memberFactory.getMember(payload.getType());
@@ -28,13 +28,9 @@ public class MemberUseCase implements MemberGateway {
 
     @Override
     public MemberDTO findMemberById(Long id) {
-        MemberEntity memberEntity = repository.findById(id).orElseThrow(() -> new EntityNotFoundException("Id not found"));
-        return mapper.entityToDto(memberEntity);
-    }
-
-    @Override
-    public List<MemberDTO> findAll(Integer pageNumber, Integer pageSize) {
-        return null;
+        MemberProjectionType projection = repository.findByIdMember(id).orElseThrow(() -> new EntityNotFoundException("Id not found"));
+        MemberActions member = memberFactory.getMember(projection.getType());
+        return member.findById(id);
     }
 
     @Override
