@@ -16,7 +16,7 @@ public class InformationUseCase {
     private final InformationRepository repository;
     private final CurrencyWebProvider webProvider;
 
-    public InformationEntity saveInformation(MemberEntity memberEntity){
+    public InformationEntity buildInformation(MemberEntity memberEntity){
         String country = memberEntity.getInformation().getCountry();
         String currency = webProvider.getCurrency(memberEntity.getInformation().getCountry());
 

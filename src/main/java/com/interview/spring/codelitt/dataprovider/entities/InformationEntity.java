@@ -2,10 +2,10 @@ package com.interview.spring.codelitt.dataprovider.entities;
 
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import jakarta.persistence.*;
-import lombok.*;
-
-import static jakarta.persistence.CascadeType.ALL;
-import static jakarta.persistence.CascadeType.MERGE;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Data

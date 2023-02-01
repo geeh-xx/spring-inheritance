@@ -13,10 +13,15 @@ import org.springframework.http.ResponseEntity;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
+import java.util.Random;
+
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 @ExtendWith(MockitoExtension.class)
-public class MemberControllerTest {
+class MemberControllerTest {
 
     @Mock
     private MemberGateway memberGateway;
@@ -30,11 +35,11 @@ public class MemberControllerTest {
     }
 
     @Test
-    public void testCreateMember(){
+    void testCreateMember(){
         //given
         factory = new PodamFactoryImpl();
         MemberDTO memberDTO = factory.manufacturePojo(MemberDTO.class);
-        Mockito.when(memberGateway.createMember(Mockito.any(MemberDTO.class))).thenReturn(memberDTO);
+        Mockito.when(memberGateway.createMember(any(MemberDTO.class))).thenReturn(memberDTO);
 
         //when
         ResponseEntity<MemberDTO> response = controller.createMember(memberDTO);
@@ -42,5 +47,52 @@ public class MemberControllerTest {
         //then
         Assertions.assertNotNull(response.getBody());
         Assertions.assertEquals(CREATED, response.getStatusCode());
+    }
+
+    @Test
+    void testGetMemberByid(){
+        //given
+        Random random = new Random();
+        Long id = random.nextLong();
+
+        factory = new PodamFactoryImpl();
+        MemberDTO memberDTO = factory.manufacturePojo(MemberDTO.class);
+        Mockito.when(memberGateway.findMemberById(anyLong())).thenReturn(memberDTO);
+
+        //when
+        ResponseEntity<MemberDTO> response = controller.getMemberByid(id);
+
+        //then
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals(OK, response.getStatusCode());
+    }
+
+    @Test
+    void testUpdateMember(){
+        //given
+        factory = new PodamFactoryImpl();
+        MemberDTO memberDTO = factory.manufacturePojo(MemberDTO.class);
+        Mockito.when(memberGateway.updateMember(any(MemberDTO.class))).thenReturn(memberDTO);
+
+        //when
+        ResponseEntity<MemberDTO> response = controller.updateMember(memberDTO);
+
+        //then
+        Assertions.assertNotNull(response.getBody());
+        Assertions.assertEquals(OK, response.getStatusCode());
+    }
+
+    @Test
+    void testDeleteMember(){
+        //given
+        Random random = new Random();
+        Long id = random.nextLong();
+
+        //when
+        ResponseEntity<Void> responseEntity = controller.deleteMember(id);
+
+        //then
+        Mockito.verify(memberGateway, Mockito.times(1)).deleteMemberById(id);
+        Assertions.assertEquals(OK, responseEntity.getStatusCode());
     }
 }

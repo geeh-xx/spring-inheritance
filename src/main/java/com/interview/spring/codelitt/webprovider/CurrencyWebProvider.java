@@ -19,7 +19,7 @@ public class CurrencyWebProvider {
     private JsonNode node;
     private final CountryCurrencyClient client;
     private final MessageSource messageSource;
-    private final String findInNode = "currencies";
+    private static final String FINDINODE = "currencies";
 
     public String getCurrency(String country){
 
@@ -28,18 +28,12 @@ public class CurrencyWebProvider {
 
             mapper = new ObjectMapper();
             node = mapper.readTree(currencyResponse);
-            return node.findPath(findInNode).fieldNames().next();
+            return node.findPath(FINDINODE).fieldNames().next();
 
         }catch (Exception error){
             log.error(error.getMessage());
             throw new ExternalDependencyException("Error getting information about the inserted Country");
         }
 
-    }
-
-
-    public InformationEntity buildInformationByCountry(String country) {
-            String currency = this.getCurrency(country);
-        return InformationEntity.builder().country(country).currency(currency).build();
     }
 }

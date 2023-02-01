@@ -1,15 +1,14 @@
 package com.interview.spring.codelitt.usecase;
 
 import com.interview.spring.codelitt.dataprovider.entities.EmployeeEntity;
-import com.interview.spring.codelitt.dataprovider.repository.EmployeeRepository;
 import com.interview.spring.codelitt.dataprovider.entities.InformationEntity;
+import com.interview.spring.codelitt.dataprovider.repository.EmployeeRepository;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.enums.EmployeeRoleEnum;
 import com.interview.spring.codelitt.enums.MemberTypeEnum;
 import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
-import com.interview.spring.codelitt.usecase.strategy.MemberActions;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
-import com.interview.spring.codelitt.webprovider.CurrencyWebProvider;
+import com.interview.spring.codelitt.usecase.strategy.MemberActions;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
@@ -33,7 +32,7 @@ public class EmployeeUseCase implements MemberActions {
         EmployeeEntity employeeEntity = EmployeeEntity.builder().memberEntity(mapper.dtoToEntity(payload))
                                                        .role(payload.getRole()).build();
 
-        InformationEntity informationEntity = informationUseCase.saveInformation(employeeEntity);
+        InformationEntity informationEntity = informationUseCase.buildInformation(employeeEntity);
         employeeEntity.setInformation(informationEntity);
 
         EmployeeEntity entitySaved = repository.save(employeeEntity);
@@ -69,7 +68,7 @@ public class EmployeeUseCase implements MemberActions {
 
     @Override
     public <T> void checkParticularity(T particularity) {
-        if(particularity == null || !(particularity instanceof EmployeeRoleEnum))
+        if(!(particularity instanceof EmployeeRoleEnum))
             throw new MemberValidationException("Error in Role");
     }
 

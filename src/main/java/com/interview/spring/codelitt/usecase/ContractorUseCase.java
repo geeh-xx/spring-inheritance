@@ -1,21 +1,17 @@
 package com.interview.spring.codelitt.usecase;
 
-import com.interview.spring.codelitt.dataprovider.repository.ContractorRepository;
-import com.interview.spring.codelitt.dataprovider.repository.InformationRepository;
 import com.interview.spring.codelitt.dataprovider.entities.ContractorEntity;
 import com.interview.spring.codelitt.dataprovider.entities.InformationEntity;
+import com.interview.spring.codelitt.dataprovider.repository.ContractorRepository;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.enums.MemberTypeEnum;
 import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
-import com.interview.spring.codelitt.usecase.strategy.MemberActions;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
-import com.interview.spring.codelitt.webprovider.CurrencyWebProvider;
+import com.interview.spring.codelitt.usecase.strategy.MemberActions;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Service;
-
-import java.util.Optional;
 
 import static com.interview.spring.codelitt.enums.MemberTypeEnum.CONTRACTOR;
 
@@ -27,10 +23,8 @@ public class ContractorUseCase  implements MemberActions {
 
     private final InformationUseCase informationUseCase;
     private final MemberMapper mapper;
-    private final CurrencyWebProvider webProvider;
+
     private final MessageSource messageSource;
-
-
 
     @Override
     public MemberDTO create(MemberDTO payload) {
@@ -40,7 +34,7 @@ public class ContractorUseCase  implements MemberActions {
         ContractorEntity contractorEntity = ContractorEntity.builder().memberEntity(mapper.dtoToEntity(payload))
                                                 .contractDuration(payload.getContractDuration()).build();
 
-        InformationEntity informationEntity = informationUseCase.saveInformation(contractorEntity);
+        InformationEntity informationEntity = informationUseCase.buildInformation(contractorEntity);
         contractorEntity.setInformation(informationEntity);
 
         ContractorEntity save = repository.save(contractorEntity);
@@ -75,7 +69,7 @@ public class ContractorUseCase  implements MemberActions {
 
     @Override
     public <T> void checkParticularity(T particularity) {
-        if(particularity == null || !(particularity instanceof Integer) || ((Integer) particularity) < 1)
+        if(!(particularity instanceof Integer) || ((Integer) particularity) < 1)
             throw new MemberValidationException("Error in a contract duration");
     }
 

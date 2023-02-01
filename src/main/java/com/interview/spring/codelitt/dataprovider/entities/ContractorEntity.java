@@ -2,12 +2,12 @@ package com.interview.spring.codelitt.dataprovider.entities;
 
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import jakarta.persistence.Column;
-import jakarta.persistence.DiscriminatorValue;
 import jakarta.persistence.Entity;
 import jakarta.persistence.PrimaryKeyJoinColumn;
-import lombok.*;
-
-import static com.interview.spring.codelitt.enums.MemberTypeEnum.ValuesMember.CONTRACTOR;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 
 

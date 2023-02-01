@@ -2,12 +2,12 @@ package com.interview.spring.codelitt.usecase;
 
 import com.interview.spring.codelitt.dataprovider.entities.EmployeeEntity;
 import com.interview.spring.codelitt.dataprovider.entities.InformationEntity;
-import com.interview.spring.codelitt.dataprovider.repository.EmployeeRepository;
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
+import com.interview.spring.codelitt.dataprovider.repository.EmployeeRepository;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
+import com.interview.spring.codelitt.enums.MemberTypeEnum;
 import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
-import com.interview.spring.codelitt.webprovider.CurrencyWebProvider;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,11 +25,10 @@ import java.util.Random;
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class EmployeeUseCaseTest {
+class EmployeeUseCaseTest {
 
     @Mock
     private EmployeeRepository repository;
@@ -37,7 +36,7 @@ public class EmployeeUseCaseTest {
     private MemberMapper mapper;
 
     @Mock
-    private CurrencyWebProvider webProvider;
+    private InformationUseCase informationUseCase;
 
     @Mock
     private MessageSource messageSource;
@@ -51,7 +50,7 @@ public class EmployeeUseCaseTest {
 
     @BeforeEach
     public void setUp(){
-        useCase =  new EmployeeUseCase(repository, mapper, webProvider, messageSource);
+        useCase =  new EmployeeUseCase(repository, informationUseCase ,mapper, messageSource);
     }
 
     @Test
@@ -67,7 +66,7 @@ public class EmployeeUseCaseTest {
         InformationEntity informationEntity =  mockFactory.manufacturePojo(InformationEntity.class);
 
 
-        when(webProvider.buildInformationByCountry(anyString())).thenReturn(informationEntity);
+        when(informationUseCase.buildInformation(any())).thenReturn(informationEntity);
         when(mapper.dtoToEntity(any(MemberDTO.class))).thenReturn(memberEntity);
         when(mapper.entityToDto(any(MemberEntity.class))).thenReturn(payload);
         when(repository.save(any(EmployeeEntity.class))).thenReturn(employeeEntity);
@@ -144,6 +143,20 @@ public class EmployeeUseCaseTest {
         //then
         assertEquals("Id not found", thrown.getMessage());
         verify(repository, times(1)).findById(id);
+    }
+
+    @Test
+    void checkParticularity(){
+        //given
+
+        //when
+        Throwable thrown = assertThrows(MemberValidationException.class, () -> {
+            useCase.checkParticularity(MemberTypeEnum.EMPLOYEE);
+        });
+
+        //then
+        assertEquals("Error in Role", thrown.getMessage());
+
     }
 
 }

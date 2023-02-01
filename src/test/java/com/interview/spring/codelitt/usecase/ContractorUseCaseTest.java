@@ -7,7 +7,6 @@ import com.interview.spring.codelitt.dataprovider.repository.ContractorRepositor
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
-import com.interview.spring.codelitt.webprovider.CurrencyWebProvider;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -25,11 +24,10 @@ import java.util.Random;
 import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
-public class ContractorUseCaseTest {
+class ContractorUseCaseTest {
 
     @Mock
     private ContractorRepository repository;
@@ -37,7 +35,7 @@ public class ContractorUseCaseTest {
     private  MemberMapper mapper;
 
     @Mock
-    private CurrencyWebProvider webProvider;
+    private InformationUseCase informationUseCase;
 
     @Mock
     private MessageSource messageSource;
@@ -51,7 +49,7 @@ public class ContractorUseCaseTest {
 
     @BeforeEach
     public void setUp(){
-        useCase =  new ContractorUseCase(repository,mapper, webProvider, messageSource);
+        useCase =  new ContractorUseCase(repository, informationUseCase, mapper, messageSource);
     }
 
     @Test
@@ -66,7 +64,7 @@ public class ContractorUseCaseTest {
         memberEntity.setName(payload.getName());
         InformationEntity informationEntity =  mockFactory.manufacturePojo(InformationEntity.class);
 
-        when(webProvider.buildInformationByCountry(anyString())).thenReturn(informationEntity);
+        when(informationUseCase.buildInformation(any())).thenReturn(informationEntity);
         when(mapper.dtoToEntity(any(MemberDTO.class))).thenReturn(memberEntity);
         when(mapper.entityToDto(any(MemberEntity.class))).thenReturn(payload);
         when(repository.save(any(ContractorEntity.class))).thenReturn(contractorEntity);
@@ -99,7 +97,6 @@ public class ContractorUseCaseTest {
         //then
         assertEquals("Error in a contract duration", thrown.getMessage());
         verify(repository, times(0)).save(contractorCaptor.capture());
-
     }
 
     @Test
@@ -126,7 +123,6 @@ public class ContractorUseCaseTest {
         assertNotNull(response);
         assertEquals(id, response.getIdMember());
         verify(repository, times(1)).findById(id);
-
     }
 
     @Test
@@ -145,5 +141,18 @@ public class ContractorUseCaseTest {
         verify(repository, times(1)).findById(id);
     }
 
+    @Test
+    void checkParticularity(){
+        //given
+        Integer duractionContract = 0;
 
+        //when
+        Throwable thrown = assertThrows(MemberValidationException.class, () -> {
+            useCase.checkParticularity(duractionContract);
+        });
+
+        //then
+        assertEquals("Error in a contract duration", thrown.getMessage());
+
+    }
 }
