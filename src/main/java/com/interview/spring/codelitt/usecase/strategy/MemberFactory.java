@@ -1,4 +1,4 @@
-package com.interview.spring.codelitt.usecase.inheritance;
+package com.interview.spring.codelitt.usecase.strategy;
 
 import com.interview.spring.codelitt.enums.MemberTypeEnum;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class MemberFactory {
         return members.get(memberType);
     }
     private void createStrategy(Set<MemberActions> memberSet) {
-        members = new HashMap<MemberTypeEnum, MemberActions>();
+        members = new HashMap<>();
         memberSet.forEach(
                 strategy -> members.put(strategy.getMemberType(), strategy));
     }

@@ -4,7 +4,7 @@ name varchar(255) not null,
 type varchar(255) not null,
 role varchar(255),
 contract_duration int,
-salary bigint
+salary numeric(5,2)
 );
 
 --rollback

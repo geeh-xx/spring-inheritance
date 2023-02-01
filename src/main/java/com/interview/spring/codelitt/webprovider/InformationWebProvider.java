@@ -18,19 +18,18 @@ public abstract class InformationWebProvider {
     private JsonNode node;
     private final CountryCurrencyClient client;
     private final MessageSource messageSource;
+    private final String findInNode = "currencies";
 
     public InformationEntity buildInformationByCountry(String country){
 
         try {
-
             String currencyResponse = client.getCurrencyByCountry(country);
 
             mapper = new ObjectMapper();
             node = mapper.readTree(currencyResponse);
-            currency = node.findPath("currencies").fieldNames().next();
+            currency = node.findPath(findInNode).fieldNames().next();
 
-            InformationEntity informationEntity = InformationEntity.builder().country(country).currency(currency).build();
-            return informationEntity;
+            return InformationEntity.builder().country(country).currency(currency).build();
         }catch (Exception error){
             log.error(error.getMessage());
             throw new ExternalDependencyException("Error getting information about the inserted Country");

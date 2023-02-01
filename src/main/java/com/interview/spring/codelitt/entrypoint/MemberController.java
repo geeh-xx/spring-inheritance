@@ -5,15 +5,12 @@ import com.interview.spring.codelitt.gateway.MemberGateway;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
-import static org.springframework.http.HttpStatus.CREATED;
+import java.util.List;
+
+import static org.springframework.http.HttpStatus.*;
 
 @RestController
 @RequestMapping("/api/v1")
@@ -25,6 +22,17 @@ public class MemberController {
     @PostMapping(value = "/member")
     public ResponseEntity<MemberDTO> createMember(@RequestBody @Valid MemberDTO memberDto){
          return new ResponseEntity<>(memberGateway.createMember(memberDto), CREATED);
+    }
+
+    @GetMapping(value = "/member")
+    public ResponseEntity<List<MemberDTO>> getAllMembers(@RequestParam(value ="pageNumber", required = false) Integer pageNumber,
+                                                         @RequestParam(value ="pagesize", required = false) Integer pagesize){
+        return new ResponseEntity<>(memberGateway.findAll(pageNumber, pagesize), OK);
+    }
+
+    @GetMapping(value = "/member/{idMember}")
+    public ResponseEntity<MemberDTO> getMemberByid(@PathVariable("idMember") Long idMember){
+        return new ResponseEntity<>(memberGateway.findMemberById(idMember), OK);
     }
 
 }
