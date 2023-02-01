@@ -8,6 +8,7 @@ import com.interview.spring.codelitt.infrastructure.exception.ExternalDependency
 import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
 import com.interview.spring.codelitt.webprovider.client.CountryCurrencyClient;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -19,6 +20,10 @@ import org.springframework.context.MessageSource;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
+import java.util.Optional;
+import java.util.Random;
+
+import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -118,6 +123,49 @@ public class EmployeeUseCaseTest {
         assertEquals("Error getting information about the inserted Country", thrown.getMessage());
         verify(repository, times(0)).save(employeeCaptor.capture());
 
+    }
+
+    @Test
+    void testFindById(){
+        //given
+        Random rand = new Random();
+        Long id = rand.nextLong();
+
+        mockFactory = new PodamFactoryImpl();
+        EmployeeEntity entity = mockFactory.manufacturePojo(EmployeeEntity.class);
+        entity.setIdMember(id);
+        MemberDTO memberDTO = mockFactory.manufacturePojo(MemberDTO.class);
+        memberDTO.setIdMember(id);
+
+
+        when(repository.findById(anyLong())).thenReturn(of(entity));
+        when(mapper.entityToDto(any(MemberEntity.class))).thenReturn(memberDTO);
+        //when
+
+        MemberDTO response = useCase.findById(id);
+
+        //then
+
+        assertNotNull(response);
+        assertEquals(id, response.getIdMember());
+        verify(repository, times(1)).findById(id);
+
+    }
+
+    @Test
+    void testIdNotFound(){
+        //given
+        Random rand = new Random();
+        Long id = rand.nextLong();
+
+        //when
+        Throwable thrown = assertThrows(EntityNotFoundException.class, () -> {
+            useCase.findById(id);
+        });
+
+        //then
+        assertEquals("Id not found", thrown.getMessage());
+        verify(repository, times(1)).findById(id);
     }
 
 }

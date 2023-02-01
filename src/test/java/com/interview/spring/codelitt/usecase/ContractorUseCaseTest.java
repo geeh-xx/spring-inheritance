@@ -1,14 +1,15 @@
 package com.interview.spring.codelitt.usecase;
 
-import com.interview.spring.codelitt.dataprovider.repository.ContractorRepository;
-import com.interview.spring.codelitt.dataprovider.repository.MemberRepository;
 import com.interview.spring.codelitt.dataprovider.entities.ContractorEntity;
+import com.interview.spring.codelitt.dataprovider.entities.EmployeeEntity;
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
+import com.interview.spring.codelitt.dataprovider.repository.ContractorRepository;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.infrastructure.exception.ExternalDependencyException;
 import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
 import com.interview.spring.codelitt.webprovider.client.CountryCurrencyClient;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -20,6 +21,9 @@ import org.springframework.context.MessageSource;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
+import java.util.Random;
+
+import static java.util.Optional.of;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
@@ -120,5 +124,49 @@ public class ContractorUseCaseTest {
         verify(repository, times(0)).save(contractorCaptor.capture());
 
     }
+
+    @Test
+    void testFindById(){
+        //given
+        Random rand = new Random();
+        Long id = rand.nextLong();
+
+        mockFactory = new PodamFactoryImpl();
+        ContractorEntity entity = mockFactory.manufacturePojo(ContractorEntity.class);
+        entity.setIdMember(id);
+        MemberDTO memberDTO = mockFactory.manufacturePojo(MemberDTO.class);
+        memberDTO.setIdMember(id);
+
+
+        when(repository.findById(anyLong())).thenReturn(of(entity));
+        when(mapper.entityToDto(any(MemberEntity.class))).thenReturn(memberDTO);
+        //when
+
+        MemberDTO response = useCase.findById(id);
+
+        //then
+
+        assertNotNull(response);
+        assertEquals(id, response.getIdMember());
+        verify(repository, times(1)).findById(id);
+
+    }
+
+    @Test
+    void testIdNotFound(){
+        //given
+        Random rand = new Random();
+        Long id = rand.nextLong();
+
+        //when
+        Throwable thrown = assertThrows(EntityNotFoundException.class, () -> {
+            useCase.findById(id);
+        });
+
+        //then
+        assertEquals("Id not found", thrown.getMessage());
+        verify(repository, times(1)).findById(id);
+    }
+
 
 }

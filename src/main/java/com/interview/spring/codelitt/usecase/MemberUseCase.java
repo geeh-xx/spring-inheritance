@@ -1,4 +1,4 @@
-package com.interview.spring.codelitt.usecase.strategy;
+package com.interview.spring.codelitt.usecase;
 
 import com.interview.spring.codelitt.dataprovider.projection.MemberProjectionType;
 import com.interview.spring.codelitt.dataprovider.repository.MemberRepository;
@@ -6,6 +6,8 @@ import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEnt
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.gateway.MemberGateway;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
+import com.interview.spring.codelitt.usecase.strategy.MemberActions;
+import com.interview.spring.codelitt.usecase.strategy.MemberFactory;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
