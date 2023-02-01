@@ -10,6 +10,6 @@ public interface CountryCurrencyClient {
 
 
     @GetMapping(value = "/{country}")
-    ResponseEntity<String> getCurrencyByCountry(@PathVariable("country") String country);
+    String getCurrencyByCountry(@PathVariable("country") String country);
 
 }

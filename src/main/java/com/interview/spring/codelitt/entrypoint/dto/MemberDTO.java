@@ -5,13 +5,16 @@ import com.interview.spring.codelitt.enums.MemberTypeEnum;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.math.BigInteger;
 import java.util.List;
 
 @Getter
 @Setter
+@Builder
 public class MemberDTO {
 
     private Long idMember;
@@ -21,12 +24,12 @@ public class MemberDTO {
 
     @NotNull
     @Min(value = 1)
-    private Double salary;
+    private BigInteger salary;
 
     @NotNull
     private MemberTypeEnum type;
 
-    private Long contractDuration;
+    private Integer contractDuration;
 
     private EmployeeRoleEnum role;
 

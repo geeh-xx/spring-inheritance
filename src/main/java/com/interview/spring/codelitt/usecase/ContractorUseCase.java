@@ -7,6 +7,7 @@ import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.enums.MemberTypeEnum;
 import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
 import com.interview.spring.codelitt.usecase.inheritance.MemberActions;
+import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
 import com.interview.spring.codelitt.webprovider.InformationWebProvider;
 import com.interview.spring.codelitt.webprovider.client.CountryCurrencyClient;
 import lombok.RequiredArgsConstructor;
@@ -19,19 +20,23 @@ import static com.interview.spring.codelitt.enums.MemberTypeEnum.CONTRACTOR;
 public class ContractorUseCase extends InformationWebProvider implements MemberActions {
 
     private final MemberRepository repository;
+    private final MemberMapper mapper;
 
 
-    public ContractorUseCase(CountryCurrencyClient client, MessageSource messageSource, MemberRepository repository) {
+    public ContractorUseCase(CountryCurrencyClient client, MessageSource messageSource, MemberRepository repository, MemberMapper mapper) {
         super(client, messageSource);
         this.repository = repository;
+        this.mapper = mapper;
     }
 
     @Override
     public MemberDTO createMember(MemberDTO memberDTO) {
         checkContractDuration(memberDTO.getContractDuration());
         InformationEntity informationEntity = buildInformationByCountry(memberDTO.getCountry());
-        ContractorEntity.builder().
-        return null;
+        ContractorEntity contractorEntity = mapper.dtoToEntity(memberDTO, informationEntity);
+        ContractorEntity save = repository.save(contractorEntity);
+
+        return mapper.entityToDto(save, getMemberType());
     }
 
     @Override
@@ -39,7 +44,7 @@ public class ContractorUseCase extends InformationWebProvider implements MemberA
         return CONTRACTOR;
     }
 
-    private void checkContractDuration(Long contractDuration){
+    private void checkContractDuration(Integer contractDuration){
         if(contractDuration == null || contractDuration == 0)
             throw new MemberValidationException("Error in a contract duration");
     }

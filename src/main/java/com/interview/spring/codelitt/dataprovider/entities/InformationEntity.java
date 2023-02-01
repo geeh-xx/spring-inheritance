@@ -2,20 +2,19 @@ package com.interview.spring.codelitt.dataprovider.entities;
 
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import jakarta.persistence.*;
-import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.*;
 
 import static jakarta.persistence.CascadeType.ALL;
 
 @Builder
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
 @Entity(name = "tb_informations")
 public class InformationEntity {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id_information")
     private Long idInformations;
 
