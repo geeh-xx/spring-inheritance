@@ -12,7 +12,7 @@ public interface MemberGateway {
 
     MemberDTO updateMember(MemberDTO memberDTO);
 
-    MemberDTO deleteMemberById(Long id);
+    void deleteMemberById(Long id);
 
     MemberDTO findMemberByTag(List<String> tags);
 

@@ -9,41 +9,31 @@ import com.interview.spring.codelitt.enums.MemberTypeEnum;
 import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
 import com.interview.spring.codelitt.usecase.strategy.MemberActions;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
-import com.interview.spring.codelitt.webprovider.InformationWebProvider;
-import com.interview.spring.codelitt.webprovider.client.CountryCurrencyClient;
+import com.interview.spring.codelitt.webprovider.CurrencyWebProvider;
 import jakarta.persistence.EntityNotFoundException;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.MessageSource;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
+import org.springframework.stereotype.Service;
 
 import static com.interview.spring.codelitt.enums.MemberTypeEnum.EMPLOYEE;
 
-@Component
-public class EmployeeUseCase extends InformationWebProvider implements MemberActions {
+@Service
+@RequiredArgsConstructor
+public class EmployeeUseCase implements MemberActions {
 
     private final EmployeeRepository repository;
+    private final InformationUseCase informationUseCase;
     private final MemberMapper mapper;
-    private CountryCurrencyClient client;
-    private MessageSource messageSource;
-
-    public EmployeeUseCase(EmployeeRepository repository, MemberMapper mapper, CountryCurrencyClient client, MessageSource messageSource) {
-        super(client, messageSource);
-        this.repository = repository;
-        this.mapper = mapper;
-    }
+    private final MessageSource messageSource;
 
 
     @Override
     public MemberDTO create(MemberDTO payload) {
         checkParticularity(payload.getRole());
-
-        InformationEntity informationEntity = buildInformationByCountry(payload.getCountry());
         EmployeeEntity employeeEntity = EmployeeEntity.builder().memberEntity(mapper.dtoToEntity(payload))
                                                        .role(payload.getRole()).build();
 
-        informationEntity.setMember(employeeEntity);
+        InformationEntity informationEntity = informationUseCase.saveInformation(employeeEntity);
         employeeEntity.setInformation(informationEntity);
 
         EmployeeEntity entitySaved = repository.save(employeeEntity);
@@ -62,13 +52,13 @@ public class EmployeeUseCase extends InformationWebProvider implements MemberAct
     }
 
     @Override
-    public MemberDTO update(MemberDTO memberDTO) {
-        return null;
+    public MemberDTO update(MemberDTO payload) {
+        return create(payload);
     }
 
     @Override
-    public MemberDTO deleteById(Long id) {
-        return null;
+    public void deleteById(Long id) {
+         repository.deleteById(id);
     }
 
 

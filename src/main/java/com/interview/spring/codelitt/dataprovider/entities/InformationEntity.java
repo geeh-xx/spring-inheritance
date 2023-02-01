@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.*;
 
 import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.CascadeType.MERGE;
 
 @Builder
 @Data
@@ -22,7 +23,7 @@ public class InformationEntity {
 
     private String currency;
 
-    @OneToOne(cascade = ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "id_member", referencedColumnName = "id_member")
     private MemberEntity member;
 }

@@ -8,28 +8,28 @@ import com.interview.spring.codelitt.webprovider.client.CountryCurrencyClient;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.MessageSource;
+import org.springframework.stereotype.Component;
 
+@Component
 @RequiredArgsConstructor
 @Slf4j
-public abstract class InformationWebProvider {
+public class CurrencyWebProvider {
 
-    private String currency;
     private ObjectMapper mapper;
     private JsonNode node;
     private final CountryCurrencyClient client;
     private final MessageSource messageSource;
     private final String findInNode = "currencies";
 
-    public InformationEntity buildInformationByCountry(String country){
+    public String getCurrency(String country){
 
         try {
             String currencyResponse = client.getCurrencyByCountry(country);
 
             mapper = new ObjectMapper();
             node = mapper.readTree(currencyResponse);
-            currency = node.findPath(findInNode).fieldNames().next();
+            return node.findPath(findInNode).fieldNames().next();
 
-            return InformationEntity.builder().country(country).currency(currency).build();
         }catch (Exception error){
             log.error(error.getMessage());
             throw new ExternalDependencyException("Error getting information about the inserted Country");
@@ -37,4 +37,9 @@ public abstract class InformationWebProvider {
 
     }
 
+
+    public InformationEntity buildInformationByCountry(String country) {
+            String currency = this.getCurrency(country);
+        return InformationEntity.builder().country(country).currency(currency).build();
+    }
 }

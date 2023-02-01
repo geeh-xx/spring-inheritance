@@ -1,13 +1,13 @@
 package com.interview.spring.codelitt.usecase;
 
 import com.interview.spring.codelitt.dataprovider.entities.EmployeeEntity;
+import com.interview.spring.codelitt.dataprovider.entities.InformationEntity;
 import com.interview.spring.codelitt.dataprovider.repository.EmployeeRepository;
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
-import com.interview.spring.codelitt.infrastructure.exception.ExternalDependencyException;
 import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
-import com.interview.spring.codelitt.webprovider.client.CountryCurrencyClient;
+import com.interview.spring.codelitt.webprovider.CurrencyWebProvider;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -20,7 +20,6 @@ import org.springframework.context.MessageSource;
 import uk.co.jemos.podam.api.PodamFactory;
 import uk.co.jemos.podam.api.PodamFactoryImpl;
 
-import java.util.Optional;
 import java.util.Random;
 
 import static java.util.Optional.of;
@@ -38,7 +37,7 @@ public class EmployeeUseCaseTest {
     private MemberMapper mapper;
 
     @Mock
-    private CountryCurrencyClient client;
+    private CurrencyWebProvider webProvider;
 
     @Mock
     private MessageSource messageSource;
@@ -52,7 +51,7 @@ public class EmployeeUseCaseTest {
 
     @BeforeEach
     public void setUp(){
-        useCase =  new EmployeeUseCase(repository, mapper, client, messageSource);
+        useCase =  new EmployeeUseCase(repository, mapper, webProvider, messageSource);
     }
 
     @Test
@@ -65,9 +64,10 @@ public class EmployeeUseCaseTest {
         employeeEntity.setName(payload.getName());
         MemberEntity memberEntity = mockFactory.manufacturePojo(MemberEntity.class);
         memberEntity.setName(payload.getName());
-        String currency = "[{\"currencies\": {\"BRL\": {\"name\": \"Brazilian real\",\"symbol\": \"R$\"}}}]";
+        InformationEntity informationEntity =  mockFactory.manufacturePojo(InformationEntity.class);
 
-        when(client.getCurrencyByCountry(anyString())).thenReturn(currency);
+
+        when(webProvider.buildInformationByCountry(anyString())).thenReturn(informationEntity);
         when(mapper.dtoToEntity(any(MemberDTO.class))).thenReturn(memberEntity);
         when(mapper.entityToDto(any(MemberEntity.class))).thenReturn(payload);
         when(repository.save(any(EmployeeEntity.class))).thenReturn(employeeEntity);
@@ -99,28 +99,6 @@ public class EmployeeUseCaseTest {
 
         //then
         assertEquals("Error in Role", thrown.getMessage());
-        verify(repository, times(0)).save(employeeCaptor.capture());
-
-    }
-
-    @Test
-    void testFailInRequest(){
-
-        //given
-        mockFactory = new PodamFactoryImpl();
-        MemberDTO payload = mockFactory.manufacturePojo(MemberDTO.class);
-        String currency = "fail";
-
-        when(client.getCurrencyByCountry(anyString())).thenReturn(currency);
-
-
-        //when
-        Throwable thrown = assertThrows(ExternalDependencyException.class, () -> {
-            useCase.create(payload);
-        });
-
-        //then
-        assertEquals("Error getting information about the inserted Country", thrown.getMessage());
         verify(repository, times(0)).save(employeeCaptor.capture());
 
     }

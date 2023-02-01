@@ -5,6 +5,7 @@ import com.interview.spring.codelitt.dataprovider.repository.MemberRepository;
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import com.interview.spring.codelitt.gateway.MemberGateway;
+import com.interview.spring.codelitt.infrastructure.exception.MemberValidationException;
 import com.interview.spring.codelitt.usecase.mapper.MemberMapper;
 import com.interview.spring.codelitt.usecase.strategy.MemberActions;
 import com.interview.spring.codelitt.usecase.strategy.MemberFactory;
@@ -14,6 +15,9 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
+
+import static java.util.Optional.of;
 
 @RequiredArgsConstructor
 @Service
@@ -37,12 +41,16 @@ public class MemberUseCase implements MemberGateway {
 
     @Override
     public MemberDTO updateMember(MemberDTO memberDTO) {
-        return null;
+        of(memberDTO.getIdMember()).orElseThrow(() -> new MemberValidationException("Id can not be null"));
+        MemberActions member = memberFactory.getMember(memberDTO.getType());
+        return member.update(memberDTO);
     }
 
     @Override
-    public MemberDTO deleteMemberById(Long id) {
-        return null;
+    public void deleteMemberById(Long id) {
+        MemberProjectionType projection = repository.findByIdMember(id).orElseThrow(() -> new EntityNotFoundException("Id not found"));
+        MemberActions member = memberFactory.getMember(projection.getType());
+        member.deleteById(id);
     }
 
     @Override

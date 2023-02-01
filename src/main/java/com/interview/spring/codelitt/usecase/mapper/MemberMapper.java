@@ -1,5 +1,6 @@
 package com.interview.spring.codelitt.usecase.mapper;
 
+import com.interview.spring.codelitt.dataprovider.entities.InformationEntity;
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import com.interview.spring.codelitt.entrypoint.dto.MemberDTO;
 import org.springframework.stereotype.Component;
@@ -9,7 +10,9 @@ public class MemberMapper {
 
     public MemberEntity dtoToEntity(MemberDTO payload){
         MemberEntity build = new MemberEntity(payload.getIdMember(), payload.getSalary(),
-                                            payload.getName(), payload.getType(), null, payload.getTags());
+                                            payload.getName(), payload.getType(),
+                                            InformationEntity.builder().country(payload.getCountry()).build(),
+                                            payload.getTags());
         return build;
     }
 

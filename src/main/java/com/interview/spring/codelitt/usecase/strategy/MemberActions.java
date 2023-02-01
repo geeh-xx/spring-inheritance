@@ -13,7 +13,7 @@ public interface MemberActions {
 
     MemberDTO update(MemberDTO memberDTO);
 
-    MemberDTO deleteById(Long id);
+    void deleteById(Long id);
 
     MemberTypeEnum getMemberType();
 
