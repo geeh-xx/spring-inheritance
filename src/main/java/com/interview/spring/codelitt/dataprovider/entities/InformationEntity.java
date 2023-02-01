@@ -2,14 +2,16 @@ package com.interview.spring.codelitt.dataprovider.entities;
 
 import com.interview.spring.codelitt.dataprovider.entities.inheritance.MemberEntity;
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.Setter;
 
 import static jakarta.persistence.CascadeType.ALL;
 
+@Builder
+@Data
 @Entity(name = "tb_informations")
-@Getter
-@Setter
 public class InformationEntity {
 
     @Id
