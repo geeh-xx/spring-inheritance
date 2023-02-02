@@ -9,7 +9,9 @@ Codelitt: Challenge made for the challenge of building a crud using rest full ap
 For this challenge was used the design pattern strategy and inheritance for define the entities and solid principes
 For the package definition an adaptation of hexagonal architecture was made.
 
-A factory class was created which, given the member's type, decides its specification
+A factory class was created which, given the member's type, decides its specification.
+
+this project is running on http://java-spring-interview-project-rangel-so.us-east-1.elasticbeanstalk.com/swagger-ui/index.html
 
 ### Prerequisites
 
