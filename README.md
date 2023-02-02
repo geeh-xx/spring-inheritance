@@ -1,66 +1,90 @@
-## Instructions
+<img src="readme/icon.png" align="right" />
 
-The goal of this exercise is to create a backend using Java with the Spring Boot framework.
+# Awesome README [![Awesome](https://cdn.rawgit.com/sindresorhus/awesome/d7305f38d29fed78fa85652e3a63e154dd8e8829/media/badge.svg)](https://github.com/sindresorhus/awesome)
+> The best README(or trying to do) what are you going to see today.
+Codelitt: Challenge made for the challenge of building a crud using rest full api.
 
-### The Task
+## Getting Started
 
-In this task, we are building backend of an application that helps us managing our team.
+For this challenge was used the design pattern strategy and inheritance for define the entities and solid principes
+For the package definition an adaptation of hexagonal architecture was made.
 
-### Features and Requirements
+A factory class was created which, given the member's type, decides its specification
 
-We need to offer a REST CRUD with the following features:
+### Prerequisites
 
-- A member has:
-- - A Name
-- - A Salary per year
-- - type: it can be either an employee or a contractor.
-- - -  If it's a contractor, we want to store the duration of the contract as an integer.
-- - - If it's an employee, we need to store their role, for instance: Software Engineer, Project Manager and so on.
-- A member can be tagged, for instance: C#, Angular, General Frontend, Seasoned Leader and so on. (Tags will likely be used as filters later, so keep that in mind)
-- A member lives in a Country. When we receive the request to create the member we should receive the "country" attribute, from it we should fetch the currency of the country that you should get from https://restcountries.com/, see the following example: https://restcountries.com/v3.1/name/brasil, where "brasil" is the name of the country. we need to store the currency together with the country information so our HR team knows which currency to pay the member.
+The following technologies were used im this project
 
 
-### Notes:
+```
+Spring Boot - for development a api restful.
+Spring Data - for persistence.
+H2 - for in memory database.
+Liquibase - manage database changes
+feign - for create quest http
+Swagger - for api documentation.
+terraform - iac to provide resources
+docker - for create a container for app
+aws - public cloud
+rds - to database
+junit - to create unit tests
+```
+an iac folder was created that contains the terraform used in the creation of the ebs
+the docker file for creating the image
 
-1. You need to use the latest version of Spring Boot.
-2. Make sure to provide a tutorial on how to run your application.
-3. You need to use the Postgres database.
-4. The structure of your data is completely up to you. 
+### Usage
 
-## Evaluation
-| Functionality     |                                                                | Possible Points |
-|-------------------|----------------------------------------------------------------|-----------------|
-|                   | Matches the proposed requirements                              |              20 |
-|                   | Implements REST correctly                                      |              10 |
-|                   | Separation of business logic and persistence layers            |              15 |
-|                   | Input validations                                              |               5 |
-|                   | Live documentation (Swagger, or other options)                 |              10 |
-| **Code Quality**  |                                                                |                 |
-|                   | Code formatting, readability, maintainability, etc             |              10 |
-|                   | Folders and files structure                                    |               5 |
-| **DevOps**        |                                                                |                 |
-|                   | Docker image to build/run the project                          |              10 |
-| **Documentation** |                                                                |                 |
-|                   | Documentation about the work done, how to run the project, etc |               5 |
-| **Testing**       |                                                                |                 |
-|                   | Has tests for the main flows                                   |              10 |
-| **Total**         |                                                                |             100 |
+to use the project locally just clone and run it in your ide
+the local profile is activated by default and the h2 memory bank is used,
+in this mode ALL DATA IS LOST WHEN RESTART THE APPLICATION
+
+to change the profile just inform the respective profile
+
+```
+spring.profiles.active=local
+
+spring.profiles.active=dev
+```
+
+The dev profile now is running on aws using elastic beanstalk and using rds for database.
+
+The swagger is running on local address:
+```
+localhost:8080/swagger-ui/index.html
+```
+
+and dev environment in the public address:
+
+```
+http://java-spring-interview-project-rangel-so.us-east-1.elasticbeanstalk.com/swagger-ui/index.html
+```
+
+An Json example for the save a member
+
+```
+POST
+http://java-spring-interview-project-rangel-so.us-east-1.elasticbeanstalk.com/api/v1/member
+```
 
 
-### Bonus Points:
-1. If you deploy the application in any server and share the link with us
-2. If provide thoughts on what you could improve on your code given more time and incentives
+```javascript
+{
+    "idMember": 0,
+    "name": "string",
+    "salary": 4.50,
+    "type": "EMPLOYEE",
+    "contractDuration": 2,
+    "role": "SOFTWARE_ENGINEER",
+    "tags": [
+    "string"
+    ],
+    "country": "brasil"
+}
+```
 
-## F.A.Q.
 
-### Is it necessary build a frontend?
-No, this is a simply backend exercise.
 
-### How do you evaluate the exercise?
-For every exercise we have two senior backend engineers from our team reviewing the code and the functionality and giving a score for each line item as shown in the previous table.
-
-### How can I deliver the exercise?
-To deliver the exercise, you should clone this repository and work on a new branch. When you'll consider it completed, just push the branch and open a Merge Request.
-
-### Will I have access to the evaluation?
-By default we only send the result, however you can feel free to request the full evaluation and we will share it with you as well as the final score.
+### TODO
+- An exception handler to better define a standard error model.
+- Authentication and permission of APIs using jwt and spring security
+- search takes tags already registered indexing in a slatic search

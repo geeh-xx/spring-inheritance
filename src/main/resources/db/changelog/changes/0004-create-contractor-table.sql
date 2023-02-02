@@ -1,5 +1,5 @@
 create table tb_contractor (
-id_contractor identity not null primary key,
+id_contractor serial not null primary key,
 contract_duration integer
 );
 
